@@ -1,7 +1,6 @@
 <template>
   <Layout v-model="searchAnime" @click="showDev">
-    <div v-if="isLoading">Loading anime....</div>
-    <Content v-else :anime="anime" />
+    <Content :anime="anime" :loading="isLoading" />
   </Layout>
   <Developer :show="show" @close="hideDev" />
 </template>
@@ -19,68 +18,64 @@ import { onMounted, ref, watch } from "vue";
 import { debounce } from "vue-debounce";
 
 const show = ref(false)
-const showDev = () => {
-  show.value = true
-}
-const hideDev = () => {
-  show.value = false
-}
+const showDev = () => { show.value = true }
+const hideDev = () => { show.value = false }
 
 interface Anime {
-  url: '',
-  mal_id: '',
+  url: string
+  mal_id: string
   images: {
     jpg: {
-      type: '',
-      image_url: ''
+      type: string
+      image_url: string
+      large_image_url: string
     }
-  },
-  title_english: '',
-  title_japanese: '',
-  episodes: '',
+  }
+  title_english: string
+  title_japanese: string
+  episodes: string
+  score: number
 }
 
-const searchAnime: any = ref('')
-const anime: any = ref<Anime[]>([])
-const isLoading = ref<boolean>(false)
+const searchAnime = ref('')
+const anime = ref<Anime[]>([])
+const isLoading = ref(false)
+
 const fetchAnime = async () => {
-  isLoading.value = true;
+  isLoading.value = true
   try {
-    const res = await axios.get('https://api.jikan.moe/v4/anime');
-    if (res) {
-      isLoading.value = false;
-      anime.value = res.data.data
-    }
+    const res = await axios.get('https://api.jikan.moe/v4/anime')
+    anime.value = res.data.data
   } catch (error) {
-    console.log('Error fetching anime :', error)
+    console.error('Error fetching anime:', error)
+  } finally {
+    isLoading.value = false
   }
 }
 
-const handleSearch = async (searchAnime: string) => {
+const handleSearch = async (query: string) => {
+  isLoading.value = true
   try {
-    const res = await axios.get(`https://api.jikan.moe/v4/anime?q=${searchAnime}`);
-    if (res) {
-      anime.value = res.data.data
-    }
+    const res = await axios.get(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(query)}`)
+    anime.value = res.data.data
   } catch (error) {
-    console.log('No Anime found :', error)
+    console.error('No anime found:', error)
+  } finally {
+    isLoading.value = false
   }
 }
 
-onMounted(async () => {
-  fetchAnime();
+const debouncedSearch = debounce(handleSearch, 400)
+
+onMounted(() => {
+  fetchAnime()
 })
 
-const debouncedHandleSearch = debounce(handleSearch, 400);
-
-onMounted(async () => {
-  await fetchAnime();
-});
-
-watch(() => searchAnime.value, (newQuery) => {
-  if (newQuery) {
-    debouncedHandleSearch(newQuery);
+watch(() => searchAnime.value, (query) => {
+  if (query) {
+    debouncedSearch(query)
+  } else {
+    fetchAnime()
   }
-}
-);
+})
 </script>

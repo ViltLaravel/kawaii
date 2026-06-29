@@ -1,65 +1,78 @@
 <template>
-  <div class="min-h-full font-poppins font-400">
-    <Disclosure as="nav" class="border-b border-gray-200 bg-white" v-slot="{ open }">
+  <div class="min-h-screen font-poppins">
+    <nav class="sticky top-0 z-50 glass border-b border-white/10">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex h-16 justify-between">
-          <div class="flex w-full">
-            <div class="flex flex-shrink-0 items-center">
-              <img class="block h-8 w-auto" :src="Anime" alt="Your Company" />
-            </div>
-            <div class="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
-              <button @click="emit('click')"
-                class="'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium'">Anime
-                Finder</button>
-              <button @click="emit('click')"
-                class="'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium'">Developer</button>
-            </div>
+        <div class="flex h-16 items-center justify-between">
+          <div class="flex items-center gap-3">
+            <img class="h-8 w-auto drop-shadow-lg" :src="Anime" alt="Kawaii" />
+            <span class="text-lg font-semibold gradient-text hidden sm:block">KAWAII</span>
           </div>
-          <div class="-mr-2 flex items-center sm:hidden">
-            <!-- Mobile menu button -->
-            <DisclosureButton
-              class="relative inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-              <span class="absolute -inset-0.5" />
-              <span class="sr-only">Open main menu</span>
-              <Bars3Icon v-if="!open" class="block h-6 w-6" aria-hidden="true" />
-              <XMarkIcon v-else class="block h-6 w-6" aria-hidden="true" />
-            </DisclosureButton>
+
+          <div class="hidden sm:flex items-center gap-1">
+            <button @click="emit('click')"
+              class="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white rounded-lg hover:bg-white/10 transition-all duration-200">
+              Developer
+            </button>
           </div>
+
+          <button @click="mobileOpen = !mobileOpen"
+            class="sm:hidden p-2 text-gray-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors">
+            <Bars3Icon v-if="!mobileOpen" class="h-6 w-6" />
+            <XMarkIcon v-else class="h-6 w-6" />
+          </button>
         </div>
       </div>
 
-      <DisclosurePanel class="sm:hidden">
-        <div class="space-y-1 pb-3 pt-2">
-          <DisclosureButton @click="emit('click')"
-            class="'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800', 'block border-l-4 py-2 pl-3 pr-4 text-base font-medium'">
-            Anime Finder</DisclosureButton>
-          <DisclosureButton @click="emit('click')"
-            class="'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800', 'block border-l-4 py-2 pl-3 pr-4 text-base font-medium'">
-            Developer</DisclosureButton>
+      <Transition
+        enter-active-class="transition duration-200 ease-out"
+        enter-from-class="opacity-0 -translate-y-2"
+        enter-to-class="opacity-100 translate-y-0"
+        leave-active-class="transition duration-150 ease-in"
+        leave-from-class="opacity-100 translate-y-0"
+        leave-to-class="opacity-0 -translate-y-2"
+      >
+        <div v-if="mobileOpen" class="sm:hidden border-t border-white/10 px-4 py-3 space-y-1">
+          <button @click="emit('click'); mobileOpen = false"
+            class="block w-full text-left px-3 py-2 text-sm text-gray-300 hover:text-white rounded-lg hover:bg-white/10 transition-colors">
+            Developer
+          </button>
         </div>
-      </DisclosurePanel>
-    </Disclosure>
+      </Transition>
+    </nav>
 
-    <div class="p-10">
-      <main>
-        <div class="mx-auto max-w-7xl flex flex-col gap-4 md:px-6 lg:px-8">
-          <div class="flex items-center w-full md:w-[400px]">
-            <input type="text" v-model="model" id="search" placeholder="Search for an anime, e.g 'Naruto'"
-              class="w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-          </div>
-          <slot />
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <header class="mb-8 sm:mb-12 animate-fade-in">
+        <h1 class="text-3xl sm:text-4xl font-bold mb-2">
+          Discover <span class="gradient-text">Anime</span>
+        </h1>
+        <p class="text-gray-400 text-sm sm:text-base">Search thousands of anime titles from MyAnimeList</p>
+      </header>
+
+      <div class="relative mb-8 sm:mb-10 max-w-xl animate-slide-up">
+        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+          <MagnifyingGlassIcon class="h-5 w-5 text-gray-500" />
         </div>
+        <input
+          type="text"
+          v-model="model"
+          placeholder="Search for an anime, e.g. 'Naruto'"
+          class="w-full rounded-xl border-0 bg-white/[0.06] py-3 pl-11 pr-4 text-white placeholder:text-gray-500 ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-accent transition-all duration-200 text-sm sm:text-base outline-none"
+        />
+      </div>
+
+      <main>
+        <slot />
       </main>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
-import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { ref } from 'vue'
+import { Bars3Icon, XMarkIcon, MagnifyingGlassIcon } from '@heroicons/vue/24/outline'
 import Anime from '@/assets/img/kawaii.png'
 
 const model = defineModel({ required: true })
-
 const emit = defineEmits(['click'])
+const mobileOpen = ref(false)
 </script>
