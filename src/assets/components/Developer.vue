@@ -40,7 +40,7 @@
                 </div>
 
                 <h3 class="text-lg font-semibold text-white">Nicole Amoguis</h3>
-                <p class="text-sm text-gray-400 mb-1">23 years old</p>
+                <p class="text-sm text-gray-400 mb-1">{{ age }} years old</p>
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/10 text-accent-light text-xs font-medium mb-6">
                   <span class="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" />
                   Software Engineer
@@ -69,6 +69,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 import Github from '@/assets/img/github.png'
@@ -79,6 +80,16 @@ import Me from '@/assets/img/me.png'
 
 defineProps<{ show: boolean }>()
 const emit = defineEmits(['close'])
+
+const age = computed(() => {
+  const today = new Date()
+  const birth = new Date(2000, 8, 10)
+  let years = today.getFullYear() - birth.getFullYear()
+  const hadBirthday = today.getMonth() > birth.getMonth() ||
+    (today.getMonth() === birth.getMonth() && today.getDate() >= birth.getDate())
+  if (!hadBirthday) years--
+  return years
+})
 
 const socialLinks = [
   { name: 'GitHub', url: 'https://github.com/ViltLaravel/anime-finder', icon: Github },
