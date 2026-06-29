@@ -9,6 +9,10 @@
           </div>
 
           <div class="hidden sm:flex items-center gap-1">
+            <button @click="emit('about')"
+              class="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white rounded-lg hover:bg-white/10 transition-all duration-200">
+              About
+            </button>
             <button @click="emit('click')"
               class="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white rounded-lg hover:bg-white/10 transition-all duration-200">
               Developer
@@ -32,6 +36,10 @@
         leave-to-class="opacity-0 -translate-y-2"
       >
         <div v-if="mobileOpen" class="sm:hidden border-t border-white/10 px-4 py-3 space-y-1">
+          <button @click="emit('about'); mobileOpen = false"
+            class="block w-full text-left px-3 py-2 text-sm text-gray-300 hover:text-white rounded-lg hover:bg-white/10 transition-colors">
+            About
+          </button>
           <button @click="emit('click'); mobileOpen = false"
             class="block w-full text-left px-3 py-2 text-sm text-gray-300 hover:text-white rounded-lg hover:bg-white/10 transition-colors">
             Developer
@@ -73,6 +81,6 @@ import { Bars3Icon, XMarkIcon, MagnifyingGlassIcon } from '@heroicons/vue/24/out
 import Anime from '@/assets/img/kawaii.png'
 
 const model = defineModel({ required: true })
-const emit = defineEmits(['click'])
+const emit = defineEmits(['click', 'about'])
 const mobileOpen = ref(false)
 </script>

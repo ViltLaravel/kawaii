@@ -1,8 +1,9 @@
 <template>
-  <Layout v-model="searchAnime" @click="showDev">
+  <Layout v-model="searchAnime" @click="showDev" @about="showAbout">
     <Content :anime="anime" :loading="isLoading" />
   </Layout>
   <Developer :show="show" @close="hideDev" />
+  <About :show="aboutVisible" @close="hideAbout" />
 </template>
 
 <script setup lang="ts">
@@ -12,6 +13,8 @@ import Layout from "@/assets/components/Layout.vue"
 import Content from "@/assets/components/Content.vue"
 //@ts-ignore
 import Developer from '@/assets/components/Developer.vue'
+//@ts-ignore
+import About from '@/assets/components/About.vue'
 
 import axios from "axios";
 import { onMounted, ref, watch } from "vue";
@@ -20,6 +23,10 @@ import { debounce } from "vue-debounce";
 const show = ref(false)
 const showDev = () => { show.value = true }
 const hideDev = () => { show.value = false }
+
+const aboutVisible = ref(false)
+const showAbout = () => { aboutVisible.value = true }
+const hideAbout = () => { aboutVisible.value = false }
 
 interface Anime {
   url: string
